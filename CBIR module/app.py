@@ -41,7 +41,7 @@ except ImportError as e:
 # ══════════════════════════════════════════════════════════════════════════════
 #  CONFIG
 # ══════════════════════════════════════════════════════════════════════════════
-INDEX_PATH = "cbir_index.npz"
+INDEX_PATH = r"CBIR module\cbir_index.npz"
 IMG_SIZE   = 224
 
 

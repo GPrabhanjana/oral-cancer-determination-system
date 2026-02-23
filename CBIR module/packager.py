@@ -45,7 +45,7 @@ except ImportError as e:
 # ══════════════════════════════════════════════════════════════════════════════
 #  CONFIG
 # ══════════════════════════════════════════════════════════════════════════════
-INDEX_PATH     = "cbir_index.npz"
+INDEX_PATH     = r"CBIR module\cbir_index.npz"
 IMG_SIZE       = 224
 SUPPORTED_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".webp"}
 
@@ -198,8 +198,8 @@ def main():
         epilog=__doc__,
     )
     parser.add_argument(
-        "--dataset_dir", type=str, default="./Oral Images Dataset",
-        help='Path to dataset root (default: "./Oral Images Dataset").',
+        "--dataset_dir", type=str, default="./CBIR module/Oral Images Dataset",
+        help='Path to dataset root (default: "./CBIR module/Oral Images Dataset").',
     )
     parser.add_argument(
         "--device", type=str, default="cpu", choices=["cpu", "cuda", "mps"],
