@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oral Cancer Risk Screener</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #f8f4ee;
+    --ink: #1a1208;
+    --rust: #b84c2a;
+    --rust-light: #f0ddd6;
+    --amber: #c98a2e;
+    --sage: #4a7c6b;
+    --sage-light: #dceee9;
+    --muted: #7a6e63;
+    --border: #d9cec4;
+    --white: #ffffff;
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 40px 20px 80px;
+  }
+
+  .masthead {
+    max-width: 720px;
+    margin: 0 auto 48px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+  }
+  .masthead .label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--rust);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .masthead p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 560px;
+  }
+  .disclaimer {
+    background: var(--rust-light);
+    border-left: 3px solid var(--rust);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--rust);
+    margin-top: 20px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .container { max-width: 720px; margin: 0 auto; }
+
+  .section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .icon-cause   { background: #fef3e2; }
+  .icon-symptom { background: var(--rust-light); }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .section-header .subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .question-item {
+    padding: 16px 28px;
+    border-bottom: 1px solid #f0ece6;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: background 0.15s;
+  }
+  .question-item:last-child { border-bottom: none; }
+  .question-item:hover { background: #fdfaf7; }
+
+  .q-text {
+    flex: 1;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    padding-top: 2px;
+  }
+  .q-text small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .toggle-group {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .toggle-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'Source Sans 3', sans-serif;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .toggle-btn:hover { border-color: var(--amber); color: var(--ink); }
+  .toggle-btn.yes.active { background: var(--rust); border-color: var(--rust); color: #fff; font-weight: 600; }
+  .toggle-btn.no.active  { background: var(--ink);  border-color: var(--ink);  color: #fff; }
+
+  /* Differential sub-block embedded directly after a triggering symptom */
+  .diff-block {
+    display: none;
+    border-left: 3px solid var(--sage);
+    background: #f5faf8;
+  }
+  .diff-block.visible { display: block; }
+
+  .diff-block-header {
+    padding: 10px 28px 10px 22px;
+    background: var(--sage-light);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sage);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #c8e0d9;
+  }
+
+  .diff-question {
+    padding: 14px 28px 14px 22px;
+    border-bottom: 1px solid #e0ede9;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: background 0.15s;
+  }
+  .diff-question:last-child { border-bottom: none; }
+  .diff-question:hover { background: #eef7f4; }
+  .diff-question .q-text { font-size: 14px; }
+
+  /* Progress */
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    margin-bottom: 32px;
+    border-radius: 2px;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--rust);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  /* Submit */
+  .submit-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+  }
+  .submit-btn {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: none;
+    padding: 16px 48px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .submit-btn:hover { background: var(--rust); }
+
+  /* Result */
+  .result-card {
+    display: none;
+    margin-top: 36px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    animation: fadeUp 0.4s ease;
+  }
+  .result-card.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header { padding: 24px 28px; color: #fff; }
+  .result-header .risk-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+  .result-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+  }
+  .result-body { padding: 24px 28px; background: var(--white); }
+  .result-body p { font-size: 15px; line-height: 1.8; color: var(--ink); }
+  .result-body p + p { margin-top: 12px; }
+  .result-body ul { margin: 14px 0 0 18px; font-size: 14px; color: var(--muted); line-height: 2; }
+
+  .risk-high    { background: #9b1c1c; }
+  .risk-caution { background: #b45309; }
+  .risk-consult { background: #1e5a8e; }
+  .risk-diff    { background: var(--sage); }
+  .risk-none    { background: #374151; }
+
+  .reset-btn {
+    margin-top: 20px;
+    display: inline-block;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover { border-color: var(--ink); color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="label">Clinical Screening Tool</div>
+  <h1>Oral Cancer<br>Risk Questionnaire</h1>
+  <p>This screener evaluates risk factors and symptoms associated with oral cancer. Answer each question honestly. Results are indicative only and do not constitute a medical diagnosis.</p>
+  <div class="disclaimer">&#9888; This tool is not a substitute for professional clinical evaluation. Always consult a qualified dentist or oncologist.</div>
+</div>
+
+<div class="container">
+
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- ── SECTION A: RISK FACTORS ─────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-cause">&#128269;</div>
+      <div>
+        <h2>Section A &#8212; Risk Factors</h2>
+        <div class="subtitle">Lifestyle, exposures, and medical history associated with oral cancer</div>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Do you currently smoke or use tobacco products (cigarettes, cigars, pipe, bidis)?
+        <small>Includes past use within the last 10 years</small>
+      </div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c1" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c1" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Do you use smokeless tobacco &#8212; chewing tobacco, snuff, or gutkha?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c2" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c2" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Do you chew betel nut (areca nut) or pan, with or without tobacco?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c3" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c3" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Do you consume alcohol regularly?
+        <small>More than 14 units/week (men) or 7 units/week (women)</small>
+      </div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c4" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c4" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Do you have a known HPV (Human Papillomavirus) infection, or have you been told you are at elevated risk?
+        <small>HPV-16 is associated with oropharyngeal cancers</small>
+      </div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c5" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c5" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Are you frequently exposed to prolonged sunlight or UV radiation without lip protection?
+        <small>Relevant for labial (lip) carcinoma</small>
+      </div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c6" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c6" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Do you have a family history of oral cancer or head and neck cancers?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c7" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c7" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Do you have a personal history of prior oral lesions, dysplasia, or head and neck cancer?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c8" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c8" data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="question-item">
+      <div class="q-text">Are you immunocompromised or on long-term immunosuppressant medications?
+        <small>E.g., organ transplant recipients, HIV/AIDS, long-term steroids</small>
+      </div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="c9" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="c9" data-val="no">No</button>
+      </div>
+    </div>
+
+  </div><!-- /section A -->
+
+
+  <!-- ── SECTION B: SYMPTOMS ──────────────────────────────────── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-symptom">&#128138;</div>
+      <div>
+        <h2>Section B &#8212; Symptoms</h2>
+        <div class="subtitle">Signs and presentations associated with oral cancer. Follow-up questions will appear for relevant symptoms.</div>
+      </div>
+    </div>
+
+    <!-- s1 ── Non-healing ulcers -->
+    <div class="question-item">
+      <div class="q-text">Do you have any sores or ulcers in your mouth that have not healed within 3 weeks?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s1" data-val="yes" data-diff="diff-s1">Yes</button>
+        <button class="toggle-btn no"  data-id="s1" data-val="no"  data-diff="diff-s1">No</button>
+      </div>
+    </div>
+    <div class="diff-block" id="diff-s1">
+      <div class="diff-block-header">&#128300; Follow-up &#8212; Differentiating the ulcer</div>
+      <div class="diff-question">
+        <div class="q-text">Did the sore appear within a few days of starting a new medication, having a dental procedure, or a possible allergic exposure?
+          <small>Points toward drug reaction, contact stomatitis, or fixed drug eruption</small>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn yes" data-id="d1" data-val="yes">Yes</button>
+          <button class="toggle-btn no"  data-id="d1" data-val="no">No</button>
+        </div>
+      </div>
+      <div class="diff-question">
+        <div class="q-text">Does the ulcer recur periodically and heal completely on its own within 1&#8211;2 weeks each time?
+          <small>A recurring, self-resolving pattern is characteristic of aphthous ulcers (canker sores)</small>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn yes" data-id="d2" data-val="yes">Yes</button>
+          <button class="toggle-btn no"  data-id="d2" data-val="no">No</button>
+        </div>
+      </div>
+      <div class="diff-question">
+        <div class="q-text">Did the sore begin as painful clusters of small blisters, possibly preceded by a tingling or burning sensation?
+          <small>Suggests herpes simplex virus (HSV) or herpes zoster reactivation</small>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn yes" data-id="d3" data-val="yes">Yes</button>
+          <button class="toggle-btn no"  data-id="d3" data-val="no">No</button>
+        </div>
+      </div>
+    </div><!-- /diff-s1 -->
+
+    <!-- s2 ── Red/white patches -->
+    <div class="question-item">
+      <div class="q-text">Have you noticed any red (erythroplakia) or white (leukoplakia) patches inside your mouth that will not scrape off?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s2" data-val="yes" data-diff="diff-s2">Yes</button>
+        <button class="toggle-btn no"  data-id="s2" data-val="no"  data-diff="diff-s2">No</button>
+      </div>
+    </div>
+    <div class="diff-block" id="diff-s2">
+      <div class="diff-block-header">&#128300; Follow-up &#8212; Differentiating the patch</div>
+      <div class="diff-question">
+        <div class="q-text">Can the white coating be easily wiped off with a piece of gauze or a cloth?
+          <small>Removable white material strongly suggests oral candidiasis (thrush) rather than leukoplakia</small>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn yes" data-id="d4" data-val="yes">Yes</button>
+          <button class="toggle-btn no"  data-id="d4" data-val="no">No</button>
+        </div>
+      </div>
+      <div class="diff-question">
+        <div class="q-text">Does the patch correspond exactly to an area of repeated local trauma &#8212; e.g., a sharp tooth edge, ill-fitting denture, or habitual cheek biting?
+          <small>Traumatic keratosis can mimic early leukoplakia</small>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn yes" data-id="d5" data-val="yes">Yes</button>
+          <button class="toggle-btn no"  data-id="d5" data-val="no">No</button>
+        </div>
+      </div>
+      <div class="diff-question">
+        <div class="q-text">Do you notice a lace-like or net-like white pattern (fine white lines) on your inner cheeks or gums rather than a solid patch?
+          <small>Wickham&#8217;s striae &#8212; a reticular pattern &#8212; are characteristic of oral lichen planus</small>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn yes" data-id="d6" data-val="yes">Yes</button>
+          <button class="toggle-btn no"  data-id="d6" data-val="no">No</button>
+        </div>
+      </div>
+    </div><!-- /diff-s2 -->
+
+    <!-- s3 ── Lump or thickening -->
+    <div class="question-item">
+      <div class="q-text">Do you have a lump, thickening, or persistent rough patch in your mouth, on your lip, or in your throat?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s3" data-val="yes" data-diff="diff-s3">Yes</button>
+        <button class="toggle-btn no"  data-id="s3" data-val="no"  data-diff="diff-s3">No</button>
+      </div>
+    </div>
+    <div class="diff-block" id="diff-s3">
+      <div class="diff-block-header">&#128300; Follow-up &#8212; Differentiating the lump</div>
+      <div class="diff-question">
+        <div class="q-text">Is the lump or swelling tender to touch, and did it appear shortly after a dental infection, sore throat, or upper respiratory illness?
+          <small>Tender, post-infection swelling is typical of reactive lymphadenopathy, not malignancy</small>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn yes" data-id="d7" data-val="yes">Yes</button>
+          <button class="toggle-btn no"  data-id="d7" data-val="no">No</button>
+        </div>
+      </div>
+      <div class="diff-question">
+        <div class="q-text">Has a clinician previously examined this lump and given a confirmed benign diagnosis?
+          <small>E.g., fibroma, mucocele, salivary gland swelling, lipoma</small>
+        </div>
+        <div class="toggle-group">
+          <button class="toggle-btn yes" data-id="d8" data-val="yes">Yes</button>
+          <button class="toggle-btn no"  data-id="d8" data-val="no">No</button>
+        </div>
+      </div>
+    </div><!-- /diff-s3 -->
+
+    <!-- s4 ── Persistent pain -->
+    <div class="question-item">
+      <div class="q-text">Do you have persistent pain or soreness in your mouth, tongue, or throat without an obvious cause?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s4" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="s4" data-val="no">No</button>
+      </div>
+    </div>
+
+    <!-- s5 ── Dysphagia / trismus -->
+    <div class="question-item">
+      <div class="q-text">Have you experienced unexplained difficulty chewing, swallowing, or moving your tongue or jaw?
+        <small>Trismus or dysphagia without apparent dental cause</small>
+      </div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s5" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="s5" data-val="no">No</button>
+      </div>
+    </div>
+
+    <!-- s6 ── Numbness -->
+    <div class="question-item">
+      <div class="q-text">Have you had unexplained numbness or loss of feeling in any part of your mouth, face, or neck?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s6" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="s6" data-val="no">No</button>
+      </div>
+    </div>
+
+    <!-- s7 ── Hoarseness -->
+    <div class="question-item">
+      <div class="q-text">Do you have a hoarse voice or persistent sore throat that has lasted more than 3 weeks?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s7" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="s7" data-val="no">No</button>
+      </div>
+    </div>
+
+    <!-- s8 ── Neck node -->
+    <div class="question-item">
+      <div class="q-text">Have you noticed a swollen lymph node or lump in your neck that has persisted for more than 3 weeks?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s8" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="s8" data-val="no">No</button>
+      </div>
+    </div>
+
+    <!-- s9 ── Weight loss -->
+    <div class="question-item">
+      <div class="q-text">Have you had unexplained weight loss &#8212; without dieting &#8212; in the past 3 months?</div>
+      <div class="toggle-group">
+        <button class="toggle-btn yes" data-id="s9" data-val="yes">Yes</button>
+        <button class="toggle-btn no"  data-id="s9" data-val="no">No</button>
+      </div>
+    </div>
+
+  </div><!-- /section B -->
+
+  <div class="submit-row">
+    <button class="submit-btn" id="submitBtn">Evaluate My Risk</button>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card" id="resultCard">
+    <div class="result-header" id="resultHeader">
+      <div class="risk-label">Assessment Result</div>
+      <h3 id="resultTitle">&#8212;</h3>
+    </div>
+    <div class="result-body" id="resultBody"></div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+(function () {
+  var answers = {};
+
+  // Attach click handlers to every toggle button via event delegation
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.toggle-btn');
+    if (!btn) return;
+
+    var id  = btn.dataset.id;
+    var val = btn.dataset.val;
+    if (!id || !val) return;
+
+    // Record answer
+    answers[id] = val;
+
+    // Highlight active in this group
+    var group = btn.closest('.toggle-group');
+    group.querySelectorAll('.toggle-btn').forEach(function (b) {
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    // If this button controls a diff block, show/hide it
+    var diffId = btn.dataset.diff;
+    if (diffId) {
+      var block = document.getElementById(diffId);
+      if (block) {
+        var show = (val === 'yes');
+        block.classList.toggle('visible', show);
+
+        // When hiding, clear stored answers for that block's questions
+        if (!show) {
+          block.querySelectorAll('.toggle-btn').forEach(function (b2) {
+            b2.classList.remove('active');
+            if (b2.dataset.id) {
+              delete answers[b2.dataset.id];
+            }
+          });
+        }
+      }
+    }
+
+    updateProgress();
+  });
+
+  // Submit
+  document.getElementById('submitBtn').addEventListener('click', evaluate);
+
+  function updateProgress() {
+    var total = 0, answered = 0;
+
+    // All main question rows
+    document.querySelectorAll('.question-item').forEach(function (row) {
+      var firstYes = row.querySelector('.toggle-btn[data-val="yes"]');
+      if (!firstYes) return;
+      var qid = firstYes.dataset.id;
+      if (!qid) return;
+      total++;
+      if (answers[qid] !== undefined) answered++;
+    });
+
+    // Visible diff questions only
+    document.querySelectorAll('.diff-block.visible .diff-question').forEach(function (row) {
+      var firstYes = row.querySelector('.toggle-btn[data-val="yes"]');
+      if (!firstYes) return;
+      var qid = firstYes.dataset.id;
+      if (!qid) return;
+      total++;
+      if (answers[qid] !== undefined) answered++;
+    });
+
+    var pct = total ? Math.round((answered / total) * 100) : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  function evaluate() {
+    var causeKeys   = ['c1','c2','c3','c4','c5','c6','c7','c8','c9'];
+    var symptomKeys = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+    var diffKeys    = ['d1','d2','d3','d4','d5','d6','d7','d8'];
+
+    var hasCause   = causeKeys.some(function (k)   { return answers[k] === 'yes'; });
+    var hasSymptom = symptomKeys.some(function (k) { return answers[k] === 'yes'; });
+    var diffPresent = diffKeys.some(function (k)   { return answers[k] === 'yes'; });
+
+    var card   = document.getElementById('resultCard');
+    var header = document.getElementById('resultHeader');
+    var title  = document.getElementById('resultTitle');
+    var body   = document.getElementById('resultBody');
+
+    var riskClass, titleText, bodyHTML;
+
+    if (hasCause && hasSymptom) {
+      riskClass = 'risk-high';
+      titleText = 'High Risk \u2014 Seek Immediate Consultation';
+      bodyHTML =
+        '<p>You have reported <strong>both significant risk factors and active symptoms</strong> associated with oral cancer. This combination warrants urgent clinical evaluation.</p>' +
+        '<p><strong>Please consult a dentist, oral surgeon, or oncologist as soon as possible</strong> \u2014 ideally within the next 1\u20132 weeks. Do not wait for symptoms to worsen.</p>' +
+        '<p>Early-stage oral cancer is highly treatable. Prompt action is the most important thing you can do right now.</p>' +
+        (diffPresent ? '<p style="color:#4a7c6b;font-size:14px;margin-top:16px;border-left:3px solid #4a7c6b;padding-left:12px;">Some of your symptoms may overlap with other conditions based on your follow-up answers. A clinician will rule out alternatives through examination and biopsy if required \u2014 this does not reduce the urgency of being seen.</p>' : '') +
+        '<ul>' +
+        '<li>Book an urgent appointment with an oral health specialist</li>' +
+        '<li>Bring a list of all medications, habits, and symptom duration</li>' +
+        '<li>Do not attempt to self-treat or ignore lesions</li>' +
+        '</ul>';
+
+    } else if (hasCause && !hasSymptom) {
+      riskClass = 'risk-caution';
+      titleText = 'Elevated Risk \u2014 Caution Advised';
+      bodyHTML =
+        '<p>You have identified <strong>one or more significant risk factors</strong> for oral cancer but have not reported active symptoms at this time.</p>' +
+        '<p>While the absence of symptoms is reassuring, your risk profile warrants attention. Schedule a <strong>routine oral cancer screening</strong> with your dentist if you have not had one in the past year.</p>' +
+        '<p>Reducing or eliminating modifiable risks \u2014 especially tobacco, areca nut, and alcohol \u2014 can significantly lower your lifetime risk.</p>' +
+        '<ul>' +
+        '<li>Schedule an oral cancer screening examination</li>' +
+        '<li>Discuss your risk factors openly with your dentist or GP</li>' +
+        '<li>Consider cessation support if substance use is a factor</li>' +
+        '<li>Perform monthly self-examinations and report any new changes lasting over 3 weeks</li>' +
+        '</ul>';
+
+    } else if (!hasCause && hasSymptom && !diffPresent) {
+      riskClass = 'risk-consult';
+      titleText = 'Symptoms Present \u2014 Consultation Recommended';
+      bodyHTML =
+        '<p>You have reported <strong>symptoms consistent with oral cancer</strong>, even without identified lifestyle risk factors. Oral cancer can occur in individuals with no obvious risk history.</p>' +
+        '<p><strong>We recommend consulting a dentist or oral health specialist</strong> to have your symptoms properly evaluated. Most oral lesions are benign, but persistent or unexplained changes always warrant professional assessment.</p>' +
+        '<ul>' +
+        '<li>Book a dental or oral medicine consultation</li>' +
+        '<li>Note the duration, location, and character of each symptom to share with your clinician</li>' +
+        '<li>If any symptom has persisted beyond 3 weeks, prioritise this appointment</li>' +
+        '</ul>';
+
+    } else if (!hasCause && hasSymptom && diffPresent) {
+      riskClass = 'risk-diff';
+      titleText = 'Possible Alternate Diagnosis \u2014 Consultation Still Advised';
+      bodyHTML =
+        '<p>Your symptom responses are consistent with oral cancer presentations, but your follow-up answers suggest these may also be explained by <strong>other, non-cancerous conditions</strong> \u2014 such as aphthous ulcers, oral candidiasis, lichen planus, traumatic lesions, or reactive lymphadenopathy.</p>' +
+        '<p>This is important context, but it does <strong>not</strong> eliminate the need for professional evaluation. Differential diagnoses can only be confirmed \u2014 and malignancy ruled out \u2014 through direct clinical examination and biopsy where indicated.</p>' +
+        '<ul>' +
+        '<li>Schedule a dental or oral medicine consultation</li>' +
+        '<li>Share the specific locations, duration, and any associated triggers with your clinician</li>' +
+        '<li>If a lesion has not resolved within 3 weeks of removing an apparent cause, escalate urgency</li>' +
+        '</ul>';
+
+    } else {
+      riskClass = 'risk-none';
+      titleText = 'No Immediate Concerns Identified';
+      bodyHTML =
+        '<p>Based on your responses, you have not reported significant risk factors or active symptoms associated with oral cancer at this time.</p>' +
+        '<p>This is encouraging \u2014 however, good oral health habits remain important for everyone.</p>' +
+        '<ul>' +
+        '<li>Attend regular dental check-ups at least once a year</li>' +
+        '<li>Maintain a healthy diet and limit alcohol consumption</li>' +
+        '<li>Avoid tobacco and areca nut products</li>' +
+        '<li>Perform periodic self-examinations of your mouth \u2014 look for any new patches, sores, or lumps</li>' +
+        '<li>Report any changes that persist beyond 3 weeks to your dentist</li>' +
+        '</ul>';
+    }
+
+    header.className = 'result-header ' + riskClass;
+    title.textContent = titleText;
+    body.innerHTML = bodyHTML + '<br><button class="reset-btn" id="resetBtn">\u21ba Start Over</button>';
+
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+
+    card.classList.add('visible');
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function resetForm() {
+    answers = {};
+    document.querySelectorAll('.toggle-btn').forEach(function (b) { b.classList.remove('active'); });
+    document.querySelectorAll('.diff-block').forEach(function (b) { b.classList.remove('visible'); });
+    document.getElementById('resultCard').classList.remove('visible');
+    document.getElementById('progressBar').style.width = '0%';
+    window.scrollTo({ behavior: 'smooth', top: 0 });
+  }
+
+})();
+</script>
+</body>
+</html>
