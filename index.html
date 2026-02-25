@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OralGuard — Oral Cancer Screening Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream: #f8f4ee; --ink: #1a1208; --rust: #b84c2a; --rust-light: #f0ddd6;
+  --rust-mid: #d4623a; --amber: #c98a2e; --sage: #4a7c6b; --sage-light: #dceee9;
+  --muted: #7a6e63; --border: #d9cec4; --white: #ffffff; --dark: #0f0b06;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--cream); color: var(--ink); font-family: 'Source Sans 3', sans-serif; font-weight: 300; min-height: 100vh; overflow-x: hidden; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  background: rgba(248,244,238,0.97); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
+.logo-mark { width: 32px; height: 32px; background: var(--rust); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; }
+.logo-text { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--ink); }
+.logo-text span { color: var(--rust); }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-link {
+  padding: 7px 14px; font-size: 13px; color: var(--muted);
+  cursor: pointer; border-radius: 4px; border: 1px solid transparent;
+  background: none; font-family: 'Source Sans 3', sans-serif; transition: all 0.15s;
+  text-decoration: none; display: inline-block;
+}
+.nav-link:hover { color: var(--ink); border-color: var(--border); background: var(--white); }
+.nav-link.active { color: var(--rust); border-color: var(--rust-light); background: var(--rust-light); font-weight: 600; }
+
+/* APP WRAPPER — sits right under nav */
+#app { padding-top: 64px; }
+
+/* HERO */
+.hero { background: var(--dark); color: white; position: relative; overflow: hidden; }
+.hero-inner {
+  max-width: 1100px; margin: 0 auto; padding: 72px 40px 64px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+}
+.hero-badge {
+  display: inline-block; font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--rust-mid); font-weight: 600; margin-bottom: 16px;
+  padding: 5px 12px; border: 1px solid rgba(184,76,42,0.4); border-radius: 20px;
+}
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px,4vw,50px); line-height: 1.12; margin-bottom: 20px; color: #f0ece6; }
+.hero h1 em { color: var(--rust-mid); font-style: italic; }
+.hero-copy { font-size: 16px; line-height: 1.8; color: #a09890; margin-bottom: 32px; max-width: 420px; }
+.hero-stat-row { display: flex; gap: 32px; }
+.hero-stat .num { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--rust-mid); }
+.hero-stat .lbl { font-size: 12px; color: #706860; margin-top: 2px; }
+.hero-visual { display: flex; flex-direction: column; gap: 12px; }
+.hero-card {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 18px 22px; display: flex; align-items: center; gap: 16px;
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+}
+.hero-card:hover { background: rgba(255,255,255,0.1); border-color: rgba(184,76,42,0.5); transform: translateX(4px); }
+.hc-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.ic-red  { background: rgba(184,76,42,0.2); }
+.ic-teal { background: rgba(74,124,107,0.2); }
+.hc-info { flex: 1; }
+.hc-title { font-size: 15px; font-weight: 600; color: #f0ece6; margin-bottom: 3px; }
+.hc-desc  { font-size: 12px; color: #706860; }
+.hc-arrow { color: #706860; font-size: 18px; transition: transform 0.2s; }
+.hero-card:hover .hc-arrow { transform: translateX(4px); color: var(--rust-mid); }
+
+/* FEATURES */
+.features-wrap { max-width: 1100px; margin: 0 auto; padding: 56px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.feature-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 32px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+.feature-card:hover { border-color: var(--rust); box-shadow: 0 8px 32px rgba(184,76,42,0.1); transform: translateY(-2px); }
+.fc-badge { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--rust); font-weight: 600; margin-bottom: 14px; }
+.feature-card h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 10px; }
+.feature-card p { font-size: 14px; color: var(--muted); line-height: 1.8; flex: 1; margin-bottom: 22px; }
+.fc-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--cream); font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border: none; padding: 11px 22px; border-radius: 4px; cursor: pointer; transition: background 0.2s; align-self: flex-start; text-decoration: none; }
+.fc-btn:hover { background: var(--rust); }
+
+/* HOW IT WORKS */
+.how-wrap { background: #fdfaf7; border-top: 1px solid var(--border); padding: 56px 40px; }
+.how-inner { max-width: 1100px; margin: 0 auto; }
+.section-label { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--rust); font-weight: 600; margin-bottom: 10px; }
+.how-inner h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 36px; }
+.how-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; }
+.how-step .hs-num { font-family: 'Playfair Display', serif; font-size: 44px; color: var(--rust-light); line-height: 1; margin-bottom: 10px; }
+.how-step .hs-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+.how-step .hs-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* FOOTER */
+.home-footer { background: var(--dark); color: #706860; padding: 36px 40px; text-align: center; }
+.home-footer .fl { font-family: 'Playfair Display', serif; font-size: 18px; color: #a09890; margin-bottom: 10px; }
+.home-footer .fl span { color: var(--rust-mid); }
+.home-footer > p { font-size: 13px; line-height: 1.7; max-width: 480px; margin: 0 auto; }
+.home-footer .fd { margin-top: 18px; padding-top: 18px; border-top: 1px solid #2a2520; font-size: 12px; color: #4a4440; }
+
+/* SELF-EXAM MODAL */
+#exam-modal {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.78); backdrop-filter: blur(6px);
+  align-items: flex-start; justify-content: center;
+  padding: 80px 20px 40px; overflow-y: auto;
+}
+#exam-modal.open { display: flex; }
+.exam-box { background: var(--white); border-radius: 14px; width: 100%; max-width: 760px; overflow: hidden; animation: mIn 0.22s ease; position: relative; margin: auto; }
+@keyframes mIn { from { opacity:0; transform:scale(.95) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
+.exam-head { padding: 20px 26px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.exam-head h3 { font-family: 'Playfair Display', serif; font-size: 21px; }
+.close-x { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: none; color: var(--muted); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.close-x:hover { background: var(--rust); border-color: var(--rust); color: white; }
+.exam-img-wrap { background: #f5f1eb; border-bottom: 1px solid var(--border); text-align: center; }
+.exam-img-wrap img { max-width: 100%; max-height: 320px; object-fit: contain; display: block; margin: 0 auto; }
+.exam-caption { padding: 9px 22px; font-size: 12px; color: var(--muted); text-align: center; border-bottom: 1px solid var(--border); background: #fdfaf7; }
+.exam-body { padding: 22px 26px; }
+.exam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.exam-step { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 13px 15px; }
+.exam-step .en { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--rust-light); line-height: 1; margin-bottom: 5px; }
+.exam-step .et { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+.exam-step .ed { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.exam-signs h4 { font-weight: 600; font-size: 13px; margin-bottom: 9px; }
+.exam-signs-list { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.es-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--muted); }
+.es-dot { width: 5px; height: 5px; background: var(--rust); border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.exam-foot { padding: 14px 26px; background: #fdfaf7; border-top: 1px solid var(--border); text-align: right; }
+.exam-close-btn { background: var(--ink); color: var(--cream); font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border: none; padding: 10px 26px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+.exam-close-btn:hover { background: var(--rust); }
+
+@media (max-width: 700px) {
+  nav { padding: 0 16px; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .features-wrap { grid-template-columns: 1fr; padding: 36px 20px; }
+  .how-steps { grid-template-columns: 1fr 1fr; }
+  .exam-grid { grid-template-columns: 1fr; }
+  .exam-signs-list { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="logo-mark">+</div>
+    <div class="logo-text">Oral<span>Guard</span></div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link active" href="index.html">Home</a>
+    <a class="nav-link" href="Questionnaire.html">Risk Screener</a>
+    <a class="nav-link" href="http://127.0.0.1:7860" target="_blank">Image Matcher ↗</a>
+  </div>
+</nav>
+
+<!-- SELF-EXAM MODAL -->
+<div id="exam-modal" onclick="if(event.target===this)closeExam()">
+  <div class="exam-box">
+    <div class="exam-head">
+      <h3>Oral Self-Examination Guide</h3>
+      <button class="close-x" onclick="closeExam()">✕</button>
+    </div>
+    <div class="exam-img-wrap">
+      <img src="img.png" alt="Oral self-exam diagram" onerror="this.style.display='none'">
+    </div>
+    <div class="exam-caption">Check all highlighted areas monthly — takes 5 minutes</div>
+    <div class="exam-body">
+      <div class="exam-grid">
+        <div class="exam-step">
+          <div class="en">01</div><div class="et">Lips &amp; Corners</div>
+          <div class="ed">Pull lips away from teeth. Look for sores or colour changes on the lips and corners.</div>
+        </div>
+        <div class="exam-step">
+          <div class="en">02</div><div class="et">Inner Cheeks &amp; Gums</div>
+          <div class="ed">Pull each cheek sideways. Look for red, white, or mixed patches. Feel for lumps.</div>
+        </div>
+        <div class="exam-step">
+          <div class="en">03</div><div class="et">Tongue — All Sides</div>
+          <div class="ed">Stick out tongue. Check top, then inspect sides and underside — the most common cancer site.</div>
+        </div>
+        <div class="exam-step">
+          <div class="en">04</div><div class="et">Floor of Mouth</div>
+          <div class="ed">Press tongue to roof of mouth. Check underneath for swelling, sores, or colour changes.</div>
+        </div>
+        <div class="exam-step">
+          <div class="en">05</div><div class="et">Palate (Roof)</div>
+          <div class="ed">Tilt head back, open wide. Look for lumps or changes on the hard and soft palate.</div>
+        </div>
+        <div class="exam-step">
+          <div class="en">06</div><div class="et">Throat &amp; Neck</div>
+          <div class="ed">Say "Aah" and check the back of your throat. Feel along your neck for enlarged lymph nodes.</div>
+        </div>
+      </div>
+      <div class="exam-signs">
+        <h4>Report any of these to a dentist:</h4>
+        <div class="exam-signs-list">
+          <div class="es-item"><div class="es-dot"></div>Sore not healed in 3 weeks</div>
+          <div class="es-item"><div class="es-dot"></div>Red or white patch that won't wipe off</div>
+          <div class="es-item"><div class="es-dot"></div>Lump or rough thickening</div>
+          <div class="es-item"><div class="es-dot"></div>Persistent pain or numbness</div>
+          <div class="es-item"><div class="es-dot"></div>Difficulty chewing or swallowing</div>
+          <div class="es-item"><div class="es-dot"></div>Hoarse voice lasting 3+ weeks</div>
+          <div class="es-item"><div class="es-dot"></div>Swollen neck node 3+ weeks</div>
+          <div class="es-item"><div class="es-dot"></div>Unexplained weight loss</div>
+        </div>
+      </div>
+    </div>
+    <div class="exam-foot">
+      <button class="exam-close-btn" onclick="closeExam()">Close Guide</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge">● Oral Cancer Screening Platform</div>
+        <h1>Detect early.<br><em>Act sooner.</em><br>Survive.</h1>
+        <p class="hero-copy">Oral cancer is highly treatable when caught early. Use our tools to check your risk, review your symptoms, and compare lesion images against clinical cases.</p>
+        <div class="hero-stat-row">
+          <div class="hero-stat"><div class="num">84%</div><div class="lbl">5-yr survival<br>at Stage I</div></div>
+          <div class="hero-stat"><div class="num">20%</div><div class="lbl">5-yr survival<br>at Stage IV</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card" onclick="openExam()">
+          <div class="hc-icon ic-red">🔍</div>
+          <div class="hc-info"><div class="hc-title">Self-Exam Guide</div><div class="hc-desc">Check your own mouth in 5 minutes</div></div>
+          <div class="hc-arrow">→</div>
+        </div>
+        <a class="hero-card" href="Questionnaire.html">
+          <div class="hc-icon ic-teal">📋</div>
+          <div class="hc-info"><div class="hc-title">Risk Screener</div><div class="hc-desc">18 questions — get a personalised risk result</div></div>
+          <div class="hc-arrow">→</div>
+        </a>
+        <a class="hero-card" href="http://127.0.0.1:7860" target="_blank">
+          <div class="hc-icon ic-red">📷</div>
+          <div class="hc-info"><div class="hc-title">Image Matcher</div><div class="hc-desc">Compare a lesion photo to our clinical database</div></div>
+          <div class="hc-arrow">↗</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features-wrap">
+    <div class="feature-card" onclick="openExam()">
+      <div class="fc-badge">Start Here</div>
+      <h3>Self-Exam Guide</h3>
+      <p>A step-by-step visual guide to checking your own mouth at home. Know what to look for — lips, tongue, cheeks, floor of mouth, and throat.</p>
+      <button class="fc-btn">Open Guide →</button>
+    </div>
+    <a class="feature-card" href="Questionnaire.html">
+      <div class="fc-badge">Risk Assessment</div>
+      <h3>Risk Screener</h3>
+      <p>A clinical questionnaire covering tobacco, alcohol, HPV, and 9 key symptoms. Intelligent follow-up questions help differentiate oral cancer from benign conditions.</p>
+      <span class="fc-btn">Start Screener →</span>
+    </a>
+    <a class="feature-card" href="http://127.0.0.1:7860" target="_blank">
+      <div class="fc-badge">Visual Comparison</div>
+      <h3>Image Matcher</h3>
+      <p>Upload a photo of an oral lesion. AI finds the most visually similar benign and malignant cases from our indexed clinical image database.</p>
+      <span class="fc-btn">Open Matcher ↗</span>
+    </a>
+    <div class="feature-card" style="cursor:default;">
+      <div class="fc-badge" style="color:var(--sage)">Always Remember</div>
+      <h3>See a Clinician</h3>
+      <p>These tools help you become aware — they do not diagnose. Any persistent or unexplained change lasting over 3 weeks should be evaluated by a dentist or specialist.</p>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-wrap">
+    <div class="how-inner">
+      <div class="section-label">How It Works</div>
+      <h2>Three tools, one platform</h2>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="hs-num">01</div>
+          <div class="hs-title">Learn to self-examine</div>
+          <div class="hs-desc">Follow the illustrated popup guide to inspect your mouth systematically.</div>
+        </div>
+        <div class="how-step">
+          <div class="hs-num">02</div>
+          <div class="hs-title">Answer the screener</div>
+          <div class="hs-desc">Our questionnaire weighs risk factors and symptoms to assess urgency.</div>
+        </div>
+        <div class="how-step">
+          <div class="hs-num">03</div>
+          <div class="hs-title">Match a lesion photo</div>
+          <div class="hs-desc">Upload an image and our AI finds the most visually similar cases.</div>
+        </div>
+        <div class="how-step">
+          <div class="hs-num">04</div>
+          <div class="hs-title">See a clinician</div>
+          <div class="hs-desc">These tools inform — they don't diagnose. Always consult a dentist or specialist.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="home-footer">
+    <div class="fl">Oral<span>Guard</span></div>
+    <p>A research and educational screening platform. Not a substitute for professional clinical evaluation.</p>
+    <div class="fd">⚠ This tool does not provide medical diagnoses. Always consult a qualified dentist, oral surgeon, or oncologist.</div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+function openExam() {
+  document.getElementById('exam-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeExam() {
+  document.getElementById('exam-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeExam(); });
+</script>
+</body>
+</html>

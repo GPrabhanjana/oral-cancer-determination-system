@@ -27,8 +27,74 @@
     font-family: 'Source Sans 3', sans-serif;
     font-weight: 300;
     min-height: 100vh;
-    padding: 40px 20px 80px;
+    padding: 104px 20px 80px;
   }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+    background: rgba(248,244,238,0.97); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-mark { width: 32px; height: 32px; background: var(--rust); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; font-weight: bold; }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--ink); }
+  .logo-text span { color: var(--rust); }
+  .nav-links { display: flex; align-items: center; gap: 6px; }
+  .nav-link {
+    padding: 7px 14px; font-size: 13px; color: var(--muted);
+    cursor: pointer; border-radius: 4px; border: 1px solid transparent;
+    background: none; font-family: 'Source Sans 3', sans-serif; transition: all 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .nav-link:hover { color: var(--ink); border-color: var(--border); background: var(--white); }
+  .nav-link.active { color: var(--rust); border-color: var(--rust-light); background: var(--rust-light); font-weight: 600; }
+
+  /* ── SELF-EXAM MODAL ── */
+  #exam-modal {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.78); backdrop-filter: blur(6px);
+    align-items: flex-start; justify-content: center;
+    padding: 80px 20px 40px; overflow-y: auto;
+  }
+  #exam-modal.open { display: flex; }
+  .exam-box { background: var(--white); border-radius: 14px; width: 100%; max-width: 760px; overflow: hidden; animation: mIn 0.22s ease; position: relative; margin: auto; }
+  @keyframes mIn { from { opacity:0; transform:scale(.95) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
+  .exam-head { padding: 20px 26px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .exam-head h3 { font-family: 'Playfair Display', serif; font-size: 21px; }
+  .close-x { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: none; color: var(--muted); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .close-x:hover { background: var(--rust); border-color: var(--rust); color: white; }
+  .exam-img-wrap { background: #f5f1eb; border-bottom: 1px solid var(--border); text-align: center; }
+  .exam-img-wrap img { max-width: 100%; max-height: 320px; object-fit: contain; display: block; margin: 0 auto; }
+  .exam-caption { padding: 9px 22px; font-size: 12px; color: var(--muted); text-align: center; border-bottom: 1px solid var(--border); background: #fdfaf7; }
+  .exam-body { padding: 22px 26px; }
+  .exam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .exam-step { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 13px 15px; }
+  .exam-step .en { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--rust-light); line-height: 1; margin-bottom: 5px; }
+  .exam-step .et { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+  .exam-step .ed { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .exam-signs h4 { font-weight: 600; font-size: 13px; margin-bottom: 9px; }
+  .exam-signs-list { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .es-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--muted); }
+  .es-dot { width: 5px; height: 5px; background: var(--rust); border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .exam-foot { padding: 14px 26px; background: #fdfaf7; border-top: 1px solid var(--border); text-align: right; }
+  .exam-close-btn { background: var(--ink); color: var(--cream); font-family: 'Source Sans 3', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border: none; padding: 10px 26px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+  .exam-close-btn:hover { background: var(--rust); }
+
+  /* ── SELF-EXAM TRIGGER BUTTON ── */
+  .exam-trigger {
+    background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 22px; display: flex; align-items: center; gap: 16px;
+    margin-bottom: 28px; cursor: pointer; transition: all 0.2s; width: 100%; text-align: left;
+  }
+  .exam-trigger:hover { border-color: var(--rust); background: #fffbf8; }
+  .et-icon { font-size: 22px; flex-shrink: 0; }
+  .et-info { flex: 1; }
+  .et-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; color: var(--ink); }
+  .et-desc  { font-size: 12px; color: var(--muted); }
+  .et-arrow { font-size: 18px; color: var(--border); transition: all 0.2s; }
+  .exam-trigger:hover .et-arrow { color: var(--rust); transform: scale(1.2); }
 
   .masthead {
     max-width: 720px;
@@ -276,6 +342,59 @@
 </head>
 <body>
 
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="logo-mark">+</div>
+    <div class="logo-text">Oral<span>Guard</span></div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link active" href="Questionnaire.html">Risk Screener</a>
+    <a class="nav-link" href="http://127.0.0.1:7860" target="_blank">Image Matcher ↗</a>
+  </div>
+</nav>
+
+<!-- SELF-EXAM MODAL -->
+<div id="exam-modal" onclick="if(event.target===this)closeExam()">
+  <div class="exam-box">
+    <div class="exam-head">
+      <h3>Oral Self-Examination Guide</h3>
+      <button class="close-x" onclick="closeExam()">✕</button>
+    </div>
+    <div class="exam-img-wrap">
+      <img src="img.png" alt="Oral self-exam diagram" onerror="this.style.display='none'">
+    </div>
+    <div class="exam-caption">Check all highlighted areas monthly — takes 5 minutes</div>
+    <div class="exam-body">
+      <div class="exam-grid">
+        <div class="exam-step"><div class="en">01</div><div class="et">Lips &amp; Corners</div><div class="ed">Pull lips away from teeth. Look for sores or colour changes on the lips and corners.</div></div>
+        <div class="exam-step"><div class="en">02</div><div class="et">Inner Cheeks &amp; Gums</div><div class="ed">Pull each cheek sideways. Look for red, white, or mixed patches. Feel for lumps.</div></div>
+        <div class="exam-step"><div class="en">03</div><div class="et">Tongue — All Sides</div><div class="ed">Stick out tongue. Check top, then tilt to inspect sides and underside — the most common cancer site.</div></div>
+        <div class="exam-step"><div class="en">04</div><div class="et">Floor of Mouth</div><div class="ed">Press tongue to roof of mouth. Check underneath for swelling, sores, or colour changes.</div></div>
+        <div class="exam-step"><div class="en">05</div><div class="et">Palate (Roof)</div><div class="ed">Tilt head back, open wide. Look for lumps or changes on the hard and soft palate.</div></div>
+        <div class="exam-step"><div class="en">06</div><div class="et">Throat &amp; Neck</div><div class="ed">Say "Aah" and check the back of your throat. Feel along your neck for enlarged lymph nodes.</div></div>
+      </div>
+      <div class="exam-signs">
+        <h4>Report any of these to a dentist:</h4>
+        <div class="exam-signs-list">
+          <div class="es-item"><div class="es-dot"></div>Sore not healed in 3 weeks</div>
+          <div class="es-item"><div class="es-dot"></div>Red or white patch that won't wipe off</div>
+          <div class="es-item"><div class="es-dot"></div>Lump or rough thickening</div>
+          <div class="es-item"><div class="es-dot"></div>Persistent pain or numbness</div>
+          <div class="es-item"><div class="es-dot"></div>Difficulty chewing or swallowing</div>
+          <div class="es-item"><div class="es-dot"></div>Hoarse voice lasting 3+ weeks</div>
+          <div class="es-item"><div class="es-dot"></div>Swollen neck node 3+ weeks</div>
+          <div class="es-item"><div class="es-dot"></div>Unexplained weight loss</div>
+        </div>
+      </div>
+    </div>
+    <div class="exam-foot">
+      <button class="exam-close-btn" onclick="closeExam()">Close Guide</button>
+    </div>
+  </div>
+</div>
+
 <div class="masthead">
   <div class="label">Clinical Screening Tool</div>
   <h1>Oral Cancer<br>Risk Questionnaire</h1>
@@ -284,6 +403,16 @@
 </div>
 
 <div class="container">
+
+  <!-- Self-exam trigger -->
+  <button class="exam-trigger" onclick="openExam()">
+    <div class="et-icon">🔍</div>
+    <div class="et-info">
+      <div class="et-title">Before you begin — do a quick self-exam</div>
+      <div class="et-desc">Open the visual guide to check your mouth first, then answer the questions below.</div>
+    </div>
+    <div class="et-arrow">↗</div>
+  </button>
 
   <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
 
@@ -752,6 +881,18 @@
   }
 
 })();
+</script>
+
+<script>
+function openExam() {
+  document.getElementById('exam-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeExam() {
+  document.getElementById('exam-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeExam(); });
 </script>
 </body>
 </html>

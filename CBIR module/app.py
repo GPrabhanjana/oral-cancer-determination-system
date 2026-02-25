@@ -550,7 +550,7 @@ def launch_app(
 
     # ── UI ────────────────────────────────────────────────────────────────────
     css = """
-    .gradio-container { background: #080a0f !important; }
+    .gradio-container { background: #080a0f !important; padding-top: 64px !important; }
     footer { display: none !important; }
     #title-md h1 {
       font-family: 'Syne', sans-serif !important;
@@ -563,12 +563,57 @@ def launch_app(
       font-size: 13px !important;
       font-family: 'DM Mono', monospace !important;
     }
+
+    /* ── OralGuard Nav Bar ── */
+    #oralguard-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9000;
+      background: rgba(15, 11, 6, 0.97); backdrop-filter: blur(12px);
+      border-bottom: 1px solid #2a2520;
+      padding: 0 40px; display: flex; align-items: center; justify-content: space-between;
+      height: 64px; font-family: 'Source Sans 3', sans-serif;
+    }
+    #oralguard-nav .og-logo {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    #oralguard-nav .og-mark {
+      width: 32px; height: 32px; background: #b84c2a; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: white; font-weight: bold; font-family: serif;
+    }
+    #oralguard-nav .og-wordmark {
+      font-family: 'Playfair Display', Georgia, serif; font-size: 20px; color: #f0ece6;
+    }
+    #oralguard-nav .og-wordmark span { color: #d4623a; }
+    #oralguard-nav .og-links { display: flex; align-items: center; gap: 6px; }
+    #oralguard-nav .og-link {
+      padding: 7px 14px; font-size: 13px; color: #7a6e63;
+      border-radius: 4px; border: 1px solid transparent;
+      background: none; transition: all 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    #oralguard-nav .og-link:hover { color: #f0ece6; border-color: #3a3530; background: #1a1510; }
+    #oralguard-nav .og-link.active { color: #d4623a; border-color: rgba(184,76,42,0.35); background: rgba(184,76,42,0.12); font-weight: 600; }
+    """
+
+    nav_html = """
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <div id="oralguard-nav">
+      <a class="og-logo" href="index.html">
+        <div class="og-mark">+</div>
+        <div class="og-wordmark">Oral<span>Guard</span></div>
+      </a>
+      <div class="og-links">
+        <a class="og-link" href="index.html">Home</a>
+        <a class="og-link" href="Questionnaire.html">Risk Screener</a>
+        <a class="og-link active" href="#">Image Matcher</a>
+      </div>
+    </div>
     """
 
     with gr.Blocks(
         title="Oral Cancer CBIR",
         css=css,
-        head='<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">',
+        head=nav_html,
     ) as demo:
 
         gr.Markdown(
